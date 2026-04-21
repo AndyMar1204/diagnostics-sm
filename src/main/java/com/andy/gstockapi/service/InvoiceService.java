@@ -34,7 +34,23 @@ public class InvoiceService {
     @Transactional
     public InvoiceResponse createInvoice(InvoiceRequest request) {
         // 1. Handle Client
-        Client client = clientRepository.save(clientMapper.toEntity(request.getClient()));
+        Client client;
+        if (request.getClient().getId() != null) {
+            client = clientRepository.findById(request.getClient().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Client non trouvé avec l'ID: " + request.getClient().getId()));
+            
+            // Optionally update client info if provided
+            if (request.getClient().getName() != null) client.setName(request.getClient().getName());
+            if (request.getClient().getPhone() != null) client.setPhone(request.getClient().getPhone());
+            if (request.getClient().getEmail() != null) client.setEmail(request.getClient().getEmail());
+            if (request.getClient().getAddress() != null) client.setAddress(request.getClient().getAddress());
+            client = clientRepository.save(client);
+        } else if (request.getClient().getPhone() != null && !request.getClient().getPhone().isEmpty()) {
+            client = clientRepository.findByPhone(request.getClient().getPhone())
+                    .orElseGet(() -> clientRepository.save(clientMapper.toEntity(request.getClient())));
+        } else {
+            client = clientRepository.save(clientMapper.toEntity(request.getClient()));
+        }
 
         // 2. Prepare Invoice
         Invoice invoice = Invoice.builder()
