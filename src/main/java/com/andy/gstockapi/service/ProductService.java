@@ -54,4 +54,45 @@ public class ProductService {
                 .map(categoryMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public ProductResponse updateProduct(Integer id, ProductRequest request) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + request.getCategoryId()));
+
+        product.setName(request.getName());
+        product.setDescription(request.getDescription());
+        product.setPrice(request.getPrice());
+        product.setQuantity(request.getQuantity());
+        product.setCategory(category);
+
+        return productMapper.toDto(productRepository.save(product));
+    }
+
+    @Transactional
+    public void deleteProduct(Integer id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        productRepository.delete(product);
+    }
+
+    @Transactional
+    public CategoryDTO updateCategory(Integer id, CategoryDTO request) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
+
+        category.setName(request.getName());
+
+        return categoryMapper.toDto(categoryRepository.save(category));
+    }
+
+    @Transactional
+    public void deleteCategory(Integer id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
+        categoryRepository.delete(category);
+    }
 }
