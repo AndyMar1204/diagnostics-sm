@@ -215,7 +215,7 @@ public class PdfService {
             PdfPCell mmCell = new PdfPCell();
             mmCell.setBorder(Rectangle.NO_BORDER);
             mmCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            Paragraph mmText = new Paragraph("Mobile Money\nespèce", footerTextFont);
+            Paragraph mmText = new Paragraph("Mobile Money", footerTextFont);
             mmText.setAlignment(Element.ALIGN_CENTER);
             mmCell.addElement(mmText);
             try {
@@ -251,7 +251,7 @@ public class PdfService {
             PdfPCell peCell = new PdfPCell();
             peCell.setBorder(Rectangle.NO_BORDER);
             peCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            Paragraph peText = new Paragraph("Paiement en", footerTextFont);
+            Paragraph peText = new Paragraph("Paiement en \nespéce", footerTextFont);
             peText.setAlignment(Element.ALIGN_CENTER);
             peCell.addElement(peText);
             try {
